@@ -51,7 +51,7 @@
 		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
 
 		<h2>Task 1: Drawing Single-Color Triangles</h2>
-		Given three coordinates [(x0, y0), (x1, y1), (x2, y2)], I can rasterized the associated triangle in three steps: (1) update the triangle to a consistent winding order, (2) determine the bounding box of the triangle, (3) loop through all of the pixels in the bounding box, (4) identify if a given pixel is inside or outside the triangle, and (5) fill the pixel with the given color parameter if applicable. 
+		Given three coordinates [(x0, y0), (x1, y1), (x2, y2)], I can rasterized the associated triangle in five steps: (1) update the triangle to a consistent winding order, (2) determine the bounding box of the triangle, (3) loop through all of the pixels in the bounding box, (4) identify if a given pixel is inside or outside the triangle, and (5) fill the pixel with the given color parameter if applicable. 
 
 		<p>I determined the winding order of the triangle by taking the cross product of its two consecutive edges which is equivalent to:
 			\[ ((x_1 - x_0)(y_2 - y_1) - (x_2 - x_1) • (y_1 - y_0))k \]
@@ -93,7 +93,35 @@
 		<p>My algorithm is no worse than one that checks each sample within the bounding box of the triangle, because that is exactly what my algorithm does!
 		
 		<h2>Task 2: Antialiasing by Supersampling</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		Supersampling is extremely useful for smoothing out jagged edges in diagonals in low resolution images, making them more visually appealing at a distance. Supersampling works by subdividing a pixel into multiple quadrants (sample rate of 4, yields 4 subquadrants of that pixel). Then, we can apply the same rasterizing technique as in task 1: we sample the middle of each quadrant and assign a color to it if it is inside the boundaries of the triangle. Now, however, we can average the pixel quadrants' colors so that the pixel will only be assigned one "averaged" color as pixels can only ever present one color at a time. Here is the key difference that supersampling provides. Imagine a red triangle on a white background. It's diagonal originally would have a noticeable jagged staircase due to the high contrast between the red triangle and white background. With supersampling, there might be a few pink pixels along the triangle's diagonal that at a distance makes the diagonal less jagged and much more visually appealing because the pink applies less visual contrast. Ultimately, supersampling results in smoother diagonals.
+
+		<p> To implement supersampling, I made four key modifications to the rasterization pipeline: (1) I updated every usage of sample_buffer.resize() to consider memory usage and the sample_rate when resizing the sample buffer for different sample rates, (2) I updated the rasterize_triangle() method to rasterize the supersampled buffer, (3) I updated fill_pixel() to consider the sample_rate when assigning color to the supersample buffer, and (4) I updated the resolve_to_framebuffer() method to determine the pixels' average colors and downsample the supersample buffer to the downsampled framebuffer that gets presented to the screen. </p>
+
+		<p>Look at how increased sample rates make a difference in test 4!</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task2-samplerate1.png" width="400px"/>
+				  <figcaption>Supersample rate 1 per pixel.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="task2-samplerate4" width="400px"/>
+				  <figcaption>Supersample rate 4 per pixel.</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task2-samplerate9.png" width="400px"/>
+				  <figcaption>Supersample rate 9 per pixel.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="task2-samplerate16.png" width="400px"/>
+				  <figcaption>Supersample rate 16 per pixel.</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
 
 		<h2>Task 3: Transforms</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
