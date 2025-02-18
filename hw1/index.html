@@ -36,7 +36,7 @@
 		
 		<br>
 
-		Link to GitHub repository: <a href="https://github.com/cal-cs184-student/hw-webpages-tara">github.com/cal-cs184-student/hw-webpages-tara</a>
+		Link to GitHub repository: <a href="https://github.com/cal-cs184-student/sp25-hw1-tarapande">github.com/cal-cs184-student/sp25-hw1-tarapande</a>
 
 		<figure>
 			<img src="lion.jpg" alt="Lion" style="width:50%"/>
@@ -51,29 +51,40 @@
 		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
 
 		<h2>Task 1: Drawing Single-Color Triangles</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		Given three coordinates [(x_0, y_0), (x_1, y_1), (x_2, y_2)], I can rasterized the associated triangle in three steps: (1) update the triangle to a consistent winding order, (2) determine the bounding box of the triangle, (3) loop through all of the pixels in the bounding box, (4) identify if a given pixel is inside or outside the triangle, and (5) fill the pixel with the given color parameter if applicable. 
 
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
+		<p>I determined the winding order of the triangle by taking the cross product of its two consecutive edges which is equivalent to:
+			\[ ((x_1 - x_0)(y_2 - y_1) - (x_2 - x_1) • (y_1 - y_0))k \]
+		If the component of the z-axis is negative, the winding order is clockwise. If positive, the winding order is positive. For any of my triangles, if the winding order is negative, I swapped (x_0, y_0) and (x_2, y_2) so that all of the triangles going forward will have a positive winding order (counterclockwise). Triangles can only be properly rasterized if winded in the same direction, so this step is super important.</p>
+
+		<p>Next, it was quite easy to determine the bounding box of the given triangle, the smallest rectangle that can be drawn around the entire triangle. Out of the three provided coordinates, I needed to determine the (smallest x, smallest y) which becomes one corner of the bounding box, and the (largest x, largest y) which becomes the opposite corner of the bounding box. After that, I can efficiently loop through all of the pixels in the bounding box, starting from one corner to the opposite. Finally, we sample the middle of each pixel, not the corner, to get a single sampling point from each pixel. </p>
+
+		<p>To determine if a given sampling point is inside the bounds of the triangle or not, we can use the point-in-triangle test which requires an equation for each side of the triangle. The derivation for this is simple:
+			\[ L(x,y) = V • N = -(x-x_0)(y_1-y_0) + (y-y_0)(x_1-x_0) \]
+		where V is the line from point 0 to the given sampling point and N is the normal vector between point 0 and point 1. We can then repeat the spirit of this equation for all three sides of the triangle. If all three lines are greater than or equal to 0, that means the sampling point is inside or on the edge of the triangle. Only if the point is inside or on the edge of the triangle, do we fill the entire pixel with the given color parameter. Once we repeat this process for every pixel in the bounding box, we get a completely rasterized triangle!
+
+
+		<p>Below are examples of my triangle rasterizations!</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
 				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="task1-test3.png" width="400px"/>
+				  <figcaption>Test 3.</figcaption>
 				</td>
 				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="task1-test4.png" width="400px"/>
+				  <figcaption>Test 4.</figcaption>
 				</td>
 			  </tr>
 			  <tr>
 				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="task1-test5.png" width="400px"/>
+				  <figcaption>Test 5.</figcaption>
 				</td>
 				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="task1-test6.png" width="400px"/>
+				  <figcaption>Test 6.</figcaption>
 				</td>
 			  </tr>
 			</table>
