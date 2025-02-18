@@ -97,27 +97,35 @@
 
 		<p> To implement supersampling, I made four key modifications to the rasterization pipeline: (1) I updated every usage of sample_buffer.resize() to consider memory usage and the sample_rate when resizing the sample buffer for different sample rates, (2) I updated the rasterize_triangle() method to rasterize the supersampled buffer, (3) I updated fill_pixel() to consider the sample_rate when assigning color to the supersample buffer, and (4) I updated the resolve_to_framebuffer() method to determine the pixels' average colors and downsample the supersample buffer to the downsampled framebuffer that gets presented to the screen. </p>
 
+		For step 1, I've edited the resize function's arguments to be width * height * sample_rate so that sample_rate is considered when resizing the "supersample buffer". To clarify the supersample buffer: the size of the supersample buffer, for a sample rate of 16 (4x4 supersampling) is now 4000x4000 resolution if the framebuffer is 1000x1000 resolution. Lastly, before resize is called, I call clear_buffers() to reduce overall memory usage.
+
+		For step 2, I've simply updated the rasterize_triangle() method to not only iterate through each pixel in the bounding box, but also each subquadrant within each pixel. Then I can continue to rasterize the triangle as normal, passing the subquadrant index into the updated fill_pixel() method.
+
+		For step 3, I've updated the fill_pixel() method to consider the sample_rate and subquadrant index (s) when coloring the supersample buffer: sample_rate * (y * width + x) + s. 
+
+		For step 4, I continue to iterate through the entire framebuffer, but instead of calling the color directly from the sample buffer, I set an inital color to Black (the 0 of color) and iteratively add all of the subquadrant colors of the same pixel together from the supersample buffer. Then I can divide each RGB by the sample rate (number of quadrants per pixel), effectively averaging the quadrants colors, and then reporting that averaged color to the rgb_framebuffer_target as normal in order to downsample back to the normal pixel resolution.
+
 		<p>Look at how increased sample rates make a difference in test 4!</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
 				<td style="text-align: center;">
 				  <img src="task2-samplerate1.png" width="400px"/>
-				  <figcaption>Supersample rate 1 per pixel.</figcaption>
+				  <figcaption>Supersample rate 1x per pixel</figcaption>
 				</td>
 				<td style="text-align: center;">
 				  <img src="task2-samplerate4.png" width="400px"/>
-				  <figcaption>Supersample rate 4 per pixel.</figcaption>
+				  <figcaption>Supersample rate 4x per pixel</figcaption>
 				</td>
 			  </tr>
 			  <tr>
 				<td style="text-align: center;">
 				  <img src="task2-samplerate9.png" width="400px"/>
-				  <figcaption>Supersample rate 9 per pixel.</figcaption>
+				  <figcaption>Supersample rate 9x per pixel</figcaption>
 				</td>
 				<td style="text-align: center;">
 				  <img src="task2-samplerate16.png" width="400px"/>
-				  <figcaption>Supersample rate 16 per pixel.</figcaption>
+				  <figcaption>Supersample rate 16x per pixel</figcaption>
 				</td>
 			  </tr>
 			</table>
