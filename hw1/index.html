@@ -147,7 +147,7 @@
 		</table>
 
 		<h2>Task 4: Barycentric coordinates</h2>
-		In my mind, barycentric coordinates differ from Carteisan coordinates in a similar way to polar coordinates. In a polar system, coordinates are defined relative the the center of a circle: (distance from center, angle with x axis). On the other hand, barycentric coordinates create a coordinate system relative to three points forming a triangle. There are three dimensions in this coordinate system: (dimensions from vertex A, distance from vertex B, distance from vertex C). These three degrees allow us to create a coordinate space for any triangle, where any negative values refers to the point being outside of the triangle. 
+		In my mind, barycentric coordinates differ from Carteisan coordinates in a similar way to polar coordinates. In a polar system, coordinates are defined relative the the center of a circle: (distance from center, angle with x axis). On the other hand, barycentric coordinates create a coordinate system relative to three points forming a triangle. There are three dimensions in this coordinate system: (distance from vertex A, distance from vertex B, distance from vertex C). These three degrees allow us to create a coordinate space for any triangle, where any negative values refers to the point being outside of the triangle. 
 
 		<p> In my triangle explainer diagram below, you can see how the intermediate colors of the triangle are directly induced by the three RGB vertices of the triangle depending on which vertices they are closest to. This is a great way of visualizing barycentric coordinates. </p>
 		<table style="width: 100%; text-align: center; border-collapse: collapse;">
@@ -164,8 +164,15 @@
 		</table>
 
 		<h2>Task 5: "Pixel sampling" for texture mapping</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		Textures are stored as discrete grids of color values called texels. The challenge with "pixel sampling" is that the continuous texture coordinates may not align exactly with the texel grid. For this reason, we require interpolation to approximate a suitable color for the texture space (u,v) given these discrete texture values. 
 
+		<p> For nearest pixel sampling, all you do is sample the nearest discrete texel to the continuous texture point (u,v) that you want. However, this can result in a blocky or pixelated appearance. </p> 
+
+		<p>For bilinear pixel sampling, you perform three linear interpolations across the 4 closest discrete texels to the given texture coordinate (u,v). You first perform two linear interpolations horizontally, blending the left and right sides to get two middle color values. Then you perform a final vertical linear interpolation on those two middle values to get a final color result that is much smoother.</p>
+
+		<p>I implemented the nearest sampling and bilinear sampling functions as described above. After that, I updated my rasterier to use barycentric coordinates that map the texture space (u,v) to the screen space (x,y). I mapped my barycentric screen space coordinates (alpha, beta, and gamma parameters were determined in x,y space) onto a [u0, u1, u2] triangle to get the horizontal u coordinate and a [v0, v1, v2] triangle to get the vertical v coordinate for the texture space (u,v). Then, depending on the desired texture sampling, I can pass in the correct texture color into my fill_pixel() method and successfully rasterize the triangle to have the desired texture.
+
+		<p>Below are some comparisons between nearest sampling and bilinear sampling a different sampling rates:
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
@@ -190,6 +197,9 @@
 			  </tr>
 			</table>
 		</div>
+		<p>As you can see, bilinear sampling results in a much smoother texture mapping than nearest sampling. This is most apparent in areas with lots of texture variation. For example, in the image above I chose to highlight the trees as there are a variety of colors that really makes the additional smoothness that bilinear sampling provides much more noticeable. 
+
+		<p>Also, it is interesting to note that bilinear sampling can appear to achieve similar behaviors as supersampling. After all, both resolve high contrast difference between pixels by averaging multiple "samples". Yet there are key differences that are important to acknowledge. Supersampling is useful to give a low resolution image a more "high quality" appearance by smoothing jagged edges, whereas bilinear sampling can stretch or compress textures with a smooth appearance. In other words, given a texture map and a distorted object, bilinear sampling has to choose the smoothest texture mapping. Then, supersampling can reduce any residual heavy color contrast between pixels. In the images above, you can see how supersampling greatly reduce pixel contrast, whereas bilinear sampling chooses initial texture colors that are more symbolic to the original texture mapping (compared to nearest sampling).</p>
 
 		<h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
