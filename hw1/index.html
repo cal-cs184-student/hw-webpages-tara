@@ -48,7 +48,7 @@
 		-->
 
 		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+		In homework 1, I built a triangle rasterizer and implement various sampling techniques: pixel sampling, supersampling, and level sampling. I also learned about various coordinates techniques like transformations and barycentric coordinates. Ultiamtely the goal of this assignment was to learn about ways to improve/alter images with texture mappings and antialiasing strategies.
 
 		<h2>Task 1: Drawing Single-Color Triangles</h2>
 		Given three coordinates [(x0, y0), (x1, y1), (x2, y2)], I can rasterized the associated triangle in five steps: (1) update the triangle to a consistent winding order, (2) determine the bounding box of the triangle, (3) loop through all of the pixels in the bounding box, (4) identify if a given pixel is inside or outside the triangle, and (5) fill the pixel with the given color parameter if applicable. 
@@ -202,10 +202,43 @@
 		<p>Also, it is interesting to note that bilinear sampling can appear to achieve similar behaviors as supersampling. After all, both resolve high contrast difference between pixels by averaging multiple "samples". Yet there are key differences that are important to acknowledge. Supersampling is useful to give a low resolution image a more "high quality" appearance by smoothing jagged edges, whereas bilinear sampling can stretch or compress textures with a smooth appearance. In other words, given a texture map and a distorted object, bilinear sampling has to choose the smoothest texture mapping. Then, supersampling can reduce any residual heavy color contrast between pixels. In the images above, you can see how supersampling greatly reduce pixel contrast, whereas bilinear sampling chooses initial texture colors that are more symbolic to the original texture mapping (compared to nearest sampling).</p>
 
 		<h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		We can sample textures at various "levels" which refers to how progressively downscaled the texture is. It is quite useful to sample the appropriate texture level from a mipmap where the texture is being viewed at various sizes, distances, or angles. Level Sampling techniques decide which mipmap level to sample from based on the texture coordinates (u,v) and their scale (texture change).
+
+		<p>I implemented three types of level sampling: zeroth-level, nearest level, and bilinear level sampling. For zeroth-level sampling, I hardcode the level for each pixel's texture to sample from the zeroth mipmap. For nearest level sampling, I round the level (float) to the closest mipmap level integer. For bilinear level sampling, I computed a weighted sum from each of the adjacent mipmap levels. From there, I've updated my rasterizer to calculate the texture change between pixels which is crucial for determine the mipmap level. Larger changes to texture coordinates will impact the mipmap level we need to implement effective aliasing. </p>
+
+		<p>Here are examples of zeroth level sampling and nearest level sampling with nearest pixel sampling and bilinear pixel sampling.
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task6-L0PN.png" width="400px"/>
+				  <figcaption>L_ZERO and P_NEAREST</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="task6-L0PL.png" width="400px"/>
+				  <figcaption>L_ZERO and P_LINEAR</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="task6-LNPN.png" width="400px"/>
+				  <figcaption>L_NEAREST and P_NEAREST</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="task6-LNPL.png" width="400px"/>
+				  <figcaption>L_NEAREST and P_LINEAR</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div> 
+		<p>Now let's compare pixel sampling, level sampling, and supersampling. Pixel sampling is quite fast since it involves minimal conputation and it's memory usage is also quite low since it doesn't require multiple mipmap levels. However, pixel sampling has poorer antialiasing power—espeically when you zoom out and the pixelated parts of the image become more blatant. Level sampling is slower because there is more computation and it requires a lot more memory since you need to store multiple mipmap levels. That said, level sampling is a great way to reduce antialising because it can select the appropriate level of detail required for the scale of the texture. And lastly, supersampling is the slowest because you need to sample & average multiple points and it also requires more memory to store the higher resolution supersampling buffer. That said, supersampling is also a great antialising technique because it immediately smoothes out jagged edges and reduces pixel color contrast.
 
 		<h2>(Optional) Task 7: Extra Credit - Draw Something Creative!</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		For the extra credit art competition, I decided to turn my disco cubeman into a rainbow disco cubeman! Here's how I made it. I used a png from basic test7 on the texmap test5 svg file. Then I scaled and transformed the swirl to replace cubeman's torso. After that, I changed the colors of cubeman's limbs to match the swirl. 
+		<td style="text-align: center;">
+		  <img src="task7.png" width="400px"/>
+		  <figcaption>Rainbow Disco Cubeman</figcaption>
+		</td>
 
 <!-- 		<h2>Additional Notes (please remove)</h2>
 		<ul>
