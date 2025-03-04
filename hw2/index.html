@@ -28,19 +28,19 @@
 	<body>
 		<div class="container">
 		<h1>CS184/284A Spring 2025 Homework 2 Write-Up</h1>
-		<div style="text-align: center;">Names: </div>
+		<div style="text-align: center;">Name: Tara Pande </div>
 
 		<br>
 
-		Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+		Link to webpage: <a href="https://cal-cs184-student.github.io/hw-webpages-tara/">cal-cs184-student.github.io/hw-webpages-tara/</a>
 
 		<br>
 		
-		Link to GitHub repository: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+		Link to GitHub repository: <a href="https://github.com/cal-cs184-student/sp25-hw2-taraspande">github.com/cal-cs184-student/sp25-hw2-taraspande</a>
 
 		<figure>
 			<img src="teapot.png" alt="Teapot" style="width:50%"/>
-			<figcaption>You can add images with captions!</figcaption>
+			<figcaption>Bezier Curves and Triangle Meshes</figcaption>
 		</figure>
 
 		<!--
@@ -53,29 +53,55 @@
 		<h2>Section I: Bezier Curves and Surfaces</h2>
 
 		<h3>Part 1: Bezier curves with 1D de Casteljau subdivision</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		The de Casteljau algorithm is a recursive strategy for evaluating Bezier curves using linear interpolation. When given n control points p and a parameter t (\(0 =< t =< 1\)), you can compute the n-1 intermediate control points p' at a length t subdivision as follows:
 
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
+		\[p'_i = lerp(p_i, p_{i+1}, t) = (1-t)p_i + (t)p_{i+1}\]
+
+		We repeat this computation recursively by iteratively applying this equation to the newly computed intermediate control points until only one point remains which is a point on the Bezier curve.
+
+		To implement the evaluateStep function, we take a vectors of control points and interatively compute the linear interpolation using parameter t, and push back the resulting intermediate control point to a new vector of points that we return after all of the intermediate points have been computed. The evaluateStep function only computes one level of the recursive linear interpolation.
+
+		<p>Here are my Bezier curves below. The first seven images shows the evaulation progression from the original control points down to the final evaluated point. The seventh image specifically shows the completed Bezier curve. The eighth image shows a slightly different Bezier curve that was created by moving the original control points around and modifying the parameter t.</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
 				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="part1/part1A.png" width="400px"/>
+				  <figcaption>Original Control Points</figcaption>
 				</td>
 				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="part1/part1B.png" width="400px"/>
+				  <figcaption>Evaluation Level 1</figcaption>
 				</td>
 			  </tr>
 			  <tr>
 				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="part1/part1C.png" width="400px"/>
+				  <figcaption>Evaluation Level 2</figcaption>
 				</td>
 				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="part1/part1D.png" width="400px"/>
+				  <figcaption>Evaluation Level 3</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part1/part1E.png" width="400px"/>
+				  <figcaption>Evaluation Level 4</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part1/part1F.png" width="400px"/>
+				  <figcaption>Final Evaulated Point</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part1/part1G.png" width="400px"/>
+				  <figcaption>Completed Bezier Curve</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part1/part1H.png" width="400px"/>
+				  <figcaption>Modified Control Points & Parameter t</figcaption>
 				</td>
 			  </tr>
 			</table>
@@ -101,7 +127,7 @@
 		<h2>(Optional) Section III: Potential Extra Credit - Art Competition: Model something Creative</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
-		<h2>Additional Notes (please remove)</h2>
+		<!-- <h2>Additional Notes (please remove)</h2>
 		<ul>
 			<li>You can also add code if you'd like as so: <code>code code code</code></li>
 			<li>If you'd like to add math equations, 
@@ -110,7 +136,7 @@
 					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
 				</ul>
 			</li>
-		</ul>
+		</ul> -->
 		</div>
 	</body>
 </html>
