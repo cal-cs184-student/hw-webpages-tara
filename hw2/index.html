@@ -120,7 +120,22 @@
 		<h2>Section II: Triangle Meshes and Half-Edge Data Structure</h2>
 
 		<h3>Part 3: Area-weighted vertex normals</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		We can implement the area-weighted vertex normal by iterating over all faces incident to the vertex using the half-edge data structure. We loop through all of the neighboring half edges and then get the three vertices of the current half-edge's face. Then we compute two edge vectors and find the face normal by taking the cross product of the two edge vectors. After that, we can compute the area of the triangle (half magnitude of cross product) and then add the area-weighted normal to the sum which ensures that larger faces contribute more to the final normal, thus leading to smoother Phong shading. At the end, it's important to normalize the final sum to ensure that the normal is unit-length.
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part3/part3-flat.png" width="400px"/>
+				  <figcaption>Default Flat Shading</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part3/part3-phong.png" width="400px"/>
+				  <figcaption>Phong Shading</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
 
 		<h3>Part 4: Edge flip</h3>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
