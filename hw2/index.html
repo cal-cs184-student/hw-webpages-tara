@@ -113,7 +113,7 @@
 		To implement this with code, the evaluateStep method stays basically the same (just using a 3D vector instead of 2D vector on input control points). Then we have another function called evaluate1D that recursively calls evaluateStep until a single point on the 1D Bezier curve remains. Finally, the evaluate function first calls evaluate1D on each row of the 2D grid using parameter u and then we call evaluate1D again on the resulting point with parameter v to compute the final point that rests on the Bezier surface.
 
 		<figure>
-			<img src="part2.png" style="width:50%"/>
+			<img src="part2.png" width="400px"/>
 			<figcaption>Bezier Curves and Triangle Meshes</figcaption>
 		</figure>
 
