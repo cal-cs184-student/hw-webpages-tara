@@ -122,6 +122,7 @@
 		<h3>Part 3: Area-weighted vertex normals</h3>
 		We can implement the area-weighted vertex normal by iterating over all faces incident to the vertex using the half-edge data structure. We loop through all of the neighboring half edges and then get the three vertices of the current half-edge's face. Then we compute two edge vectors and find the face normal by taking the cross product of the two edge vectors. After that, we can compute the area of the triangle (half magnitude of cross product) and then add the area-weighted normal to the sum which ensures that larger faces contribute more to the final normal, thus leading to smoother Phong shading. At the end, it's important to normalize the final sum to ensure that the normal is unit-length.
 
+		<p>Here is the teapot with both shading types:</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
@@ -149,7 +150,7 @@
 
 		Now I needed to reassign everything. I reassigned the new halfedges associated with each vertex, each edge, and both faces according to the diagram. Then I used the setNeighbors() function to assign the new next halfedge, twin halfedge, vertex, edge, and face of all 10 half edges. Again, initially I had forgotten to reassign the outer four half edges in previous incorrect implementations! My best debugging strategy, to be honest, was to stare at the diagram and my code until it all worked haha—making sure to be extremely methodical.
 
-		Here is the teapot before and after some edge flips:
+		<p>Here is the teapot before and after some edge flips:</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
