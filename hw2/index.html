@@ -174,9 +174,9 @@
 			<figcaption>Edge Split Diagram</figcaption>
 		</figure>
 
-		Eventually, I realized after many attempts that the best way to not confuse myself over all the variable name swaps was to assign my halfedges, faces, and e0 replacing M with B. However, I assigned the vertices, halfedge twins, and edges normally with B. Therefore, here are the new elements in my implementation: my new vertex [M], my three new edges [MA, MB, MD], two new faces [BMA, MBD], and six new halfedges [B->M, M->A, A->B, M->B, B->D, D->M]. In other words, I am creating the middle vertex M and the bottom two triangles completely. I set the position of the middle vertex M by using the position field from the Vertex class to be the midpoint between vertex B and vertex C. After reassigning everything according to the edge split diagram, which was much easier after realizing that B/M assignment trick, I returned the newly inserted vertex.
+		Eventually, I realized after many attempts that the best way to not confuse myself over all the variable name swaps was to assign my halfedges, faces, and e0 replacing M with B. However, I assigned the vertices, halfedge twins, and edges normally with B. Therefore, here are the new elements in my implementation: my new vertex [M], my three new edges [MA, MB, MD], two new faces [BMA, MBD], and six new halfedges [B->M, M->A, A->B, M->B, B->D, D->M]. In other words, I am creating the middle vertex M and the bottom two triangles completely. I set the position of the middle vertex M by using the position field from the Vertex class to be the midpoint between vertex B and vertex C. After reassigning everything according to the edge split diagram, which was much easier after realizing that B/M assignment trick, I returned the newly inserted vertex M.
 
-		My implementation does not support boundary edges. I check if the edge is a boundary at the beginning and return a VertexIter if it is and continue with the function if not.
+		My implementation does not support boundary edges. I check if the edge is a boundary at the beginning and return a VertexIter immediately if it is and continue with the function if not.
 
 		<p>Here is the teapot before and after some edge splits and flips. Notice in the bottom right image that the edge splits aren't really noticeable without the wireframe since splitting edges alone doesn't affect shading (you'd need to also move the vertices, etc). </p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
@@ -205,7 +205,91 @@
 		</div>
 
 		<h3>Part 6: Loop subdivision for mesh upsampling</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		Loop subdivision ended up being easier to implement than I first thought—or at least my errors were fairly small but made the entire thing not work and caused a lot of unnecessary overthinking and debugging. My first problem stemmed from using integers instead of floats for steps 1 and 2 (updating vertex positions). This caused the mesh to only return a few edges and no faces. My second problem was not realizing exactly which edges are new or not. At first I assumed that when you splitEdge on an edge, that edge becomes new, but that is not the case. I debugged this process by having my loops in part 6 break early so I can identify exactly what is happening. Referencing the diagram from part 5, MB and MC are not new! BUT... MA and MD are. This nuance is what allowed me to get the correct implementation.
+
+		So here is my completely correct implementation. First, I needed to compute the position of the newly added vertices in the subdivision. While looping through all the edges, when given a center edge AB on diamond ACBD, the formula to find this position is:
+
+		\[3/8 * (A+B) + 1/8 * (C+D)\]
+
+		Super important! These numbers need to be floats or doubles in the implementation as the position isn't necessarily going to be an integer (obviously).
+
+		Then, I had to compute the updated positions of the old vertices and their associated edges. For this, I looped through all of the vertices and used this formula:
+
+		\[(1-n*u)*original_position + u * original_neighbor_position_sum\]
+
+		In this formula, n is the degree of the vertices (number of adjacent vertices) and u is the relative positions from the new vertex (3/16 if the degree is 3 and 3/8n otherwise).
+
+		The next step is to split every edge in the mesh by looping though all of the edges in the mesh and calling the splitEdge function on each edge as long as its two vertices are both old. splitEdge returns the new vertex that I update to be new with the isNew tag. This is also why it is important to update isNew in the splitEdge function form part5 to distinguish that MA and MD are new but not MB or MC as referenced earlier.
+
+		Next, we need to flip any NEW edges that connects and OLD and NEW vertex. This was pretty simple; once again, I looped through all the edges to find where all three conditions where met and only flipped those particular edges. And then lastly, I copied the new vertex positions into the final Vertex::position.
+
+		<p>Notice below how loop subdivision smooths out sharp corners by adding more edges that are also a lot shorter. This allows for less abrupt changes in vertex positions (as there are more vertices).</p> 
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part6/part6-A.png" width="400px"/>
+				  <figcaption>Cube Before</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part6/part6-B.png" width="400px"/>
+				  <figcaption>Cube Upsampled 1x</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part6/part6-C.png" width="400px"/>
+				  <figcaption>Cube Upsampled 2x</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part6/part6-D.png" width="400px"/>
+				  <figcaption>Cube Upsampled 3x</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		<p>I do think it's pretty cool how pre-splitting edges can affect the shape of what was a cube. To create this distorted cube, I pre-split edges on one corner so that these long edges essentially wrap around the corner and sculpts it in a way to be lopsided. Below are the before (head on) and after (side view) of the pre-splitting effects.</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part6/part6-zA.png" width="400px"/>
+				  <figcaption>Pre-splitting Edges (font on)</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part6/part6-zB.png" width="400px"/>
+				  <figcaption>Upsampled Results (side view)</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		<p>The other thing I noticed is that as is (no pre-splitting), the cube is somewhat assymetric. This makes sense as the cube.dae file comes with a diagonal along each side that causes the assymetry. To fix this, I just split all 6 diagonal edges so that the cube and all of its edges are completely summetric before upsampling. Notice now that the sube is prefectly symmetrical now after this specific pre-splitting.</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">	  
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part6/part6-xA.png" width="400px"/>
+				  <figcaption>Cube Before (symmetric)</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part6/part6-xB.png" width="400px"/>
+				  <figcaption>Cube Upsampled 1x (symmetric)</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part6/part6-xC.png" width="400px"/>
+				  <figcaption>Cube Upsampled 2x (symmetric)</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part6/part6-xD.png" width="400px"/>
+				  <figcaption>Cube Upsampled 3x (symmetric)</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
 
 		<!-- <h2>(Optional) Section III: Potential Extra Credit - Art Competition: Model something Creative</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. -->
