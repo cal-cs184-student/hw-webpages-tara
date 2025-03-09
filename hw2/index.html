@@ -146,7 +146,7 @@
 			<figcaption>Edge Flip Diagram</figcaption>
 		</figure>
 
-		First, I assigned a variable to all 10 half edges in the diagram. Importantly, (I didn't remember to do this initially), this also includes the twin half edges on the outside: A->C, B->A, D->B, C->D. Then I assigned the four vertices, the five edges, and two faces.
+		<p>First, I checked if the given edge parameter is a boudary edge using the isBoundary function—immediately returning if so as you should never flip a boundary edge. Assuming now that it isn't, I assigned a variable to all 10 half edges in the diagram. Importantly, (I didn't remember to do this initially), this also includes the twin half edges on the outside: A->C, B->A, D->B, C->D. Then I assigned the four vertices, the five edges, and two faces.</p>
 
 		Now I needed to reassign everything. I reassigned the new halfedges associated with each vertex, each edge, and both faces according to the diagram. Then I used the setNeighbors() function to assign the new next halfedge, twin halfedge, vertex, edge, and face of all 10 half edges. Again, initially I had forgotten to reassign the outer four half edges in previous incorrect implementations! My best debugging strategy, to be honest, was to stare at the diagram and my code until it all worked haha—making sure to be extremely methodical.
 
