@@ -215,7 +215,7 @@
 
 		Then, I had to compute the updated positions of the old vertices and their associated edges. For this, I looped through all of the vertices and used this formula:
 
-		\[(1-n*u)*original\_position + u * original\_neighbor\_position_sum\]
+		\[(1-n*u)*original\_position + u * original\_neighbor\_position\_sum\]
 
 		In this formula, n is the degree of the vertices (number of adjacent vertices) and u is the relative positions from the new vertex (3/16 if the degree is 3 and 3/8n otherwise).
 
