@@ -138,7 +138,32 @@
 		</div>
 
 		<h3>Part 4: Edge flip</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		My debug process was pretty eventful. I don't think it was conceptually that challenging, but more so making sure everything was being reassigned correctly. My first several attempts caused the desired edge to be completely deleted. I knew this meant that I wasn't reassigning things properly in order to flip the edge. I decided that the best way to flip the edge correctly is to label all of my edges, half edges, vertices, and faces according to the diagram in part 4. 
+
+		<figure>
+			<img src="part4/part4-edgeflip.jpg" width="400px"/>
+			<figcaption>Edge Flip Diagram</figcaption>
+		</figure>
+
+		First, I assigned a variable to all 10 half edges in the diagram. Importantly, (I didn't remember to do this initially), this also includes the twin half edges on the outside: A->C, B->A, D->B, C->D. Then I assigned the four vertices, the five edges, and two faces.
+
+		Now I needed to reassign everything. I reassigned the new halfedges associated with each vertex, each edge, and both faces according to the diagram. Then I used the setNeighbors() function to assign the new next halfedge, twin halfedge, vertex, edge, and face of all 10 half edges. Again, initially I had forgotten to reassign the outer four half edges in previous incorrect implementations! My best debugging strategy, to be honest, was to stare at the diagram and my code until it all worked haha—making sure to be extremely methodical.
+
+		Here is the teapot before and after some edge flips:
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part4/part4-before.png" width="400px"/>
+				  <figcaption>Teapot Before</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part4/part4-after.png" width="400px"/>
+				  <figcaption>Teapot After</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
 
 		<h3>Part 5: Edge split</h3>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
