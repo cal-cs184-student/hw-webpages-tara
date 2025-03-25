@@ -55,19 +55,19 @@
 
 		where hFov and vFov are the field of view angles that define the sensor, converted from degrees to radians. 
 
-		Next, we need to create the ray in camera space. The ray's origin is at the camera's position (0,0,0). Therefore, we can simple compute the ray direction to be the normalized vector: 
+		<p>Next, we need to create the ray in camera space. The ray's origin is at the camera's position (0,0,0). Therefore, we can simple compute the ray direction to be the normalized vector:</p> 
 
 		\[dir_c = (X_c, Y_c, Z_c)\]
 
 		Then we need to multiply this ray direction by the camera-2-world transformation matrix that rotates the ray vector from camera space to world space. In this case, the ray's origin is the pos variable.
 
-		Lastly, we set ray.min_t = nClip and ray.max_t = fClip which defines the range of distances within which objects are visible.
+		<p>Lastly, we set ray.min_t = nClip and ray.max_t = fClip which defines the range of distances within which objects are visible.</p>
 
-		Once the camera rays are generated, we test for intersections using scene primatives like triangles and spheres. For ray-triangle intersection, we use barycentric coordinates to check if the ray hits a triangle by computing the intersection point P and checking if it lies inside the triangle. For ray-sphere intersection we use the quadratic equation to solve for the intersection point(s) t (choosing the closest one that lies within min_t and max_t). Using this information, we are able to compute the color at a pixel by tracing multiple rays per pixel and averaging their radiance estimates.
+		<p>Once the camera rays are generated, we test for intersections using scene primatives like triangles and spheres. For ray-triangle intersection, we use barycentric coordinates to check if the ray hits a triangle by computing the intersection point P and checking if it lies inside the triangle. For ray-sphere intersection we use the quadratic equation to solve for the intersection point(s) t (choosing the closest one that lies within min_t and max_t). Using this information, we are able to compute the color at a pixel by tracing multiple rays per pixel and averaging their radiance estimates.</p>
 
-		<b>(B)</b> I used the Moller-Trumbore algorithm for this task. First, I defined the triangle with three vertices p1, p2, and p3. With these vertices, we can compute two edge vectors that define the plane of the triangle. Then, I compute the determinant to check for parallelism: if dot(edge1, cross(ray\_direction, edge2)) is super close to 0, then the ray is parallel the triangle and no intersection occurs.
+		<p><b>(B)</b> I used the Moller-Trumbore algorithm to implement triangle intersection. First, I defined the triangle with three vertices p1, p2, and p3. With these vertices, we can compute two edge vectors that define the plane of the triangle. Then, I compute the determinant to check for parallelism: if dot(edge1, cross(ray\_direction, edge2)) is super close to 0, then the ray is parallel the triangle and no intersection occurs.</p>
 
-		Next, I compute the barycentric coordinates u and v:
+		<p>Next, I compute the barycentric coordinates u and v:</p>
 
 		\[u=1/determinant • dot(ray\_origin - p1, cross(ray\_direction, edge2))\] 
 
@@ -79,7 +79,7 @@
 
 		In this case, if dist is outside of [min_t, max_t] then the intersection is not within the visible range of the camera.
 
-		Finally, if there is a valid intersection, we compute the normalized interpolated normal n using barycentric coordinates:
+		<p>Finally, if there is a valid intersection, we compute the normalized interpolated normal n using barycentric coordinates:</p>
 
 		\[n = (1 - u - v) n_1 + un_2 + vn_3\]
 
@@ -114,9 +114,9 @@
 		<h2>Part 2: Bounding Volume Hierarchy</h2>
 		<b>(A)</b> BVH is a binary tree algorithm that accelerates ray tracing by organizing parts of geometric objects into a tree structure to make checking for intersections faster. 
 
-		Here is how my BVH construction algorithm works. First, I interate over all of the primitives from start to end and compute a bounding box that encompasses all of them. Next, I check the leaf node condition: if the number of primitives is less than or equal to max_leaf_size, the node should be designated as a leaf node. Now, I need to determine which axis to split along based on the largest extent of the bounding box. I chose to split along the longest axis specifically for my heuristic because it helps create a more balanced tree and reduces the tree's depth. Next, I compute the centroid average along the longest axis. I used the mean centroid position as my split point heuristic because it will allow for a more even distribution of the primitives. Finally, I partition the primitives into left and right sets based on whether their centroid is smaller or larger than the split point, and then continue recursively building the left and right subtrees.
+		<p>Here is how my BVH construction algorithm works. First, I interate over all of the primitives from start to end and compute a bounding box that encompasses all of them. Next, I check the leaf node condition: if the number of primitives is less than or equal to max_leaf_size, the node should be designated as a leaf node. Now, I need to determine which axis to split along based on the largest extent of the bounding box. I chose to split along the longest axis specifically for my heuristic because it helps create a more balanced tree and reduces the tree's depth. Next, I compute the centroid average along the longest axis. I used the mean centroid position as my split point heuristic because it will allow for a more even distribution of the primitives. Finally, I partition the primitives into left and right sets based on whether their centroid is smaller or larger than the split point, and then continue recursively building the left and right subtrees.</p>
 
-		Ultimately, this allows for a much faster traversal to check for ray intersections, going from O(n) time to O(log(n)) time.
+		<p>Ultimately, this allows for a much faster traversal to check for ray intersections, going from O(n) time to O(log(n)) time.</p>
 
 
 		<p><b>(B)</b> Here are four larger images with normal shading that utilize BVH acceleration:</p>
@@ -151,13 +151,13 @@
 		<h2>Part 3: Direct Illumination</h2>
 		<b>(A)</b> There are two different implementations of the direct lighting function: uniform hemisphere sampling (estimates direct lighting by uniformly sampling the hemisphere around the intersection point) and importance sampling (importance sampling light sources instead of random hemisphere directions which improves efficiency).
 
-		For uniform hemisphere sampling, I use a local coordinate system created by aligning the surface normal with the Z-direction because this helps converting sampled hemisphere directions into world space. For my sampling loop, I generate random directions w_in uniformly in the hemisphere. Then, I cast a "shadow ray" in the sample direction (origin at hit_p • w_in, and cast to w_in) check if it reaches a light source or not. If the ray hits a light source, the emitted light is accumulated using a Monte Carlo estimator which is made up of the Bidirectional Scattering Distribution Function (BSDF), cosine term (accounts for light directionality), and hemisphere probability density function (PDF):
+		<p>For uniform hemisphere sampling, I use a local coordinate system created by aligning the surface normal with the Z-direction because this helps converting sampled hemisphere directions into world space. For my sampling loop, I generate random directions w_in uniformly in the hemisphere. Then, I cast a "shadow ray" in the sample direction (origin at hit_p • w_in, and cast to w_in) check if it reaches a light source or not. If the ray hits a light source, the emitted light is accumulated using a Monte Carlo estimator which is made up of the Bidirectional Scattering Distribution Function (BSDF), cosine term (accounts for light directionality), and hemisphere probability density function (PDF):</p>
 
 		\[L\_out += (BSDF • emitted\_light • cosine) / PDF\] 
 
 		At the end, it is important to normalize L_out by dividing it by the total number of directions sampled within the hemisphere.
 
-		For importance sampling sampling loop, first I iterate over all the scene lights, processing them individually. I use the light's sample_L method to determine its direction wi and distance. Then I cast a shadow ray from hit_p towards wi and check for intersections. If the path is clear (not blocked), it accumulates radiance using BSDF and the sampled light's contribution. In this case, the sample is already weighted based on the light distribution, but I still normalize L_out by dividing by the number of samples. Ultimately, I compute the reflected radiance (L_out) as:
+		<p>For importance sampling sampling loop, first I iterate over all the scene lights, processing them individually. I use the light's sample_L method to determine its direction wi and distance. Then I cast a shadow ray from hit_p towards wi and check for intersections. If the path is clear (not blocked), it accumulates radiance using BSDF and the sampled light's contribution. In this case, the sample is already weighted based on the light distribution, but I still normalize L_out by dividing by the number of samples. Ultimately, I compute the reflected radiance (L_out) as:</p>
 
 		\[L\_out += (L\_in • BSDF • cosine) / PDF\]
 
@@ -227,7 +227,7 @@
 
 		<b>(D)</b> When comparing the results between uniform hemisphere sampling and lighting sampling, ultimately uniform hemisphere sampling distributes samples evenly in all directions, often resulting in high variance since many sampled directions do not contribute to the lighting. In my results, this has led to noisy images (especially when the light source occupies a small solid angle). 
 
-		On the other hand, importance sampling is able to focus on directions where actual light sources exist, which significantly improves the efficiency and reduces noise, ultimately producing higher-quality results with fewer samples. However, this technique does require explicit knowledge of the light positions.
+		<p>On the other hand, importance sampling is able to focus on directions where actual light sources exist, which significantly improves the efficiency and reduces noise, ultimately producing higher-quality results with fewer samples. However, this technique does require explicit knowledge of the light positions.</p>
 
 
 		<h2>Part 4: Global Illumination</h2>
@@ -235,7 +235,7 @@
 
 		\[L\_out = (indirect • BSDF • cosine) / (PDF • RR\_prob)\]
 
-		<b>(B)</b> Here are two images rendered with global (direct and indirect illumination) using 1024 samples per pixel:
+		<p><b>(B)</b> Here are two images rendered with global (direct and indirect illumination) using 1024 samples per pixel:</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
@@ -251,7 +251,7 @@
 			</table>
 		</div>
 
-		<b>(C)</b> Here is a direct comparison of direct vs indirect sampling on a scene using 1024 samples per pixel:
+		<p><b>(C)</b> Here is a direct comparison of direct vs indirect sampling on a scene using 1024 samples per pixel:</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
@@ -269,9 +269,9 @@
 
 		<p><b>(D)</b> Here are my renderings of CBbunny.dae with the max ray depth set to 0, 1, 2, 3, 4, and 5 bounces where isAccumBounces = false (using 1024 samples per pixel):</p>
 
-		What I find super interesting is that between the 2nd and 3rd bounce of light, the ceiling goes from completely black to being slightly lit up which is ultimately much more realistic as ceiling lights in real life also light up the ceiling, not just the walls, floor, and objects in the room. This shows why indirect lighting is so important. Using rasterization, we only consider direct lighting (what surfaces can directly see the light source), but this causes unrealistic color transitions since light bounces off many surfaces in the real world as just explained: in the real world, even if a surface doesn't have direct access to a light source, it isn't completely pitch black, it is just shadowed slightly. Indirect lighting accounts for this the more bounces you have (need at least 3 in this case), but rasterization does not consider this at all.
+		<p>What I find super interesting is that between the 2nd and 3rd bounce of light, the ceiling goes from completely black to being slightly lit up which is ultimately much more realistic as ceiling lights in real life also light up the ceiling, not just the walls, floor, and objects in the room. This shows why indirect lighting is so important. Using rasterization, we only consider direct lighting (what surfaces can directly see the light source), but this causes unrealistic color transitions since light bounces off many surfaces in the real world as just explained: in the real world, even if a surface doesn't have direct access to a light source, it isn't completely pitch black, it is just shadowed slightly. Indirect lighting accounts for this the more bounces you have (need at least 3 in this case), but rasterization does not consider this at all.</p>
 
-		Also, when comparing accumulated vs unaccumulated bounces for CBbunny.dae across different max ray depths, I notice that having accumulated bounces brightens up the image a lot and incorporates the light source's zero bounce radiance. The number of max ray depth is helpful to get the light traveling and bouncing throughout the room, but setting accumulated bounces to true allows for the light to accumulate in intensity and brighten up the image in a much more realistic way. Also, of course we need the ceiling light to be not a black box!
+		<p>Also, when comparing accumulated vs unaccumulated bounces for CBbunny.dae across different max ray depths, I notice that having accumulated bounces brightens up the image a lot and incorporates the light source's zero bounce radiance. The number of max ray depth is helpful to get the light traveling and bouncing throughout the room, but setting accumulated bounces to true allows for the light to accumulate in intensity and brighten up the image in a much more realistic way. Also, of course we need the ceiling light to be not a black box!</p>
 
 		<p><b>(E)</b> Here are my Russian Roulette renderings across different max ray depths (0, 1, 2, 3, 4, and 100) using 1024 samples per pixel:</p>
 
@@ -323,11 +323,11 @@
 		<h2>Part 5: Adaptive Sampling</h2>
 		<b>(A)</b> Adaptive sampling is an optimization technique used to reduce the number of samples required to converge to a noise-free solution in Monte Carlo path tracing. Ultimately, we want to focus more samples on areas of the image that have high variance ore require more samples to reduce noise (while using fewer samples in areas where the pixel values have already converged).
 
-		Here is how my adaptive sampling implementation works. First, we accumulate the illuminance and radiance across our intial sampling. After a certain number of samples, we then calculate the mean and standard deviation of the sample's illuminance. From here, we can compute a confidence interval for the pixel's average radiance. But if the confidence interval is small enough, we can determine that the pixel has converged and to stop sampling for that pixel in the future. In this case, the stop condition is:
+		<p>Here is how my adaptive sampling implementation works. First, we accumulate the illuminance and radiance across our intial sampling. After a certain number of samples, we then calculate the mean and standard deviation of the sample's illuminance. From here, we can compute a confidence interval for the pixel's average radiance. But if the confidence interval is small enough, we can determine that the pixel has converged and to stop sampling for that pixel in the future. In this case, the stop condition is:</p>
 
 		\[I = 1.96 • standard\_deviation / sqrt(current\_sample\_num)\] 
 
-		If I is less than or equal to the maximum tolerance times the mean illuminance, then the pixel is converged. If the pixel has not converged, we continue sampling and updating the average radiance statistics until it does. 
+		<p>If I is less than or equal to the maximum tolerance times the mean illuminance, then the pixel is converged. If the pixel has not converged, we continue sampling and updating the average radiance statistics until it does.</p>
 
 		<p><b>(B)</b> Here are two scenes rendered with 2048 samples per pixel that clearly show visible differences in sampling rate over various regions and pixels:</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
