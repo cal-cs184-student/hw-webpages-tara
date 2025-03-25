@@ -33,6 +33,7 @@
 		<br>
 
 		Link to webpage: <a href="https://cal-cs184-student.github.io/hw-webpages-tara/">cal-cs184-student.github.io/hw-webpages-tara/</a>
+		<br>
 		Link to GitHub repository: <a href="https://github.com/cal-cs184-student/sp25-hw3-tarapande3">github.com/cal-cs184-student/sp25-hw3-tarapande3</a>
 		
 		<figure>
@@ -45,7 +46,7 @@
 		-->
 
 		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+		In this homework I learned about various light sampling techniques, from initial ray generation and how to calculate when rays interact with elements of a scene, the bounding volume hierarchy algorithm with speeds up ray tracing, to direct illumination techniques (uniform hemisphere sampling and importance sampling), indirect illumination, and adaptive sampling. It is really cool to see the amount of physics and math that are relevant to computer graphics. I've already started to pick up on various lighting details used in the video games I play!
 
 		<h2>Part 1: Ray Generation and Scene Intersection</h2>
 		<b>(A)</b> The rendering pipeline in the raytracer has two main components: ray generation and primitive intersection. For ray generation, first we map the normalized (x,y) image coordinates we are given to a sensor plane (\(X_c, Y_c, Z_c\)) within the camera space. The formula to do this is:
@@ -74,9 +75,9 @@
 
 		If either u or v lies outside of [0, 1], then the intersection point lies outside of the triangle. Next, I need to compute the distance along the ray where the intersection occurs:
 
-		\[dist = f • dot(edge2, cross(ray\_origin - p1, edge1))\]
+		\[dist = 1/determinant • dot(edge2, cross(ray\_origin - p1, edge1))\]
 
-		In this case, if dist is outside of [min_t, max_t, then the intersection is not within the visible range of the camera.]
+		In this case, if dist is outside of [min_t, max_t] then the intersection is not within the visible range of the camera.
 
 		Finally, if there is a valid intersection, we compute the normalized interpolated normal n using barycentric coordinates:
 
@@ -154,9 +155,9 @@
 
 		\[L\_out += (BSDF • emitted\_light • cosine) / PDF\] 
 
-		At the end, it is important to normalize L\_out by dividing it by the total number of directions sampled within the hemisphere.
+		At the end, it is important to normalize L_out by dividing it by the total number of directions sampled within the hemisphere.
 
-		For importance sampling sampling loop, first I iterate over all the scene lights, processing them individually. I use the light's sample_L method to determine its direction wi and distance. Then I cast a shadow ray from hit_p towards wi and check for intersections. If the path is clear (not blocked), it accumulates radiance using BSDF and the sampled light's contribution. In this case, the sample is already weighted based on the light distribution, but I still normalize L\_out by dividing by the number of samples. Ultimately, I compute the reflected radiance (L\_out) as:
+		For importance sampling sampling loop, first I iterate over all the scene lights, processing them individually. I use the light's sample_L method to determine its direction wi and distance. Then I cast a shadow ray from hit_p towards wi and check for intersections. If the path is clear (not blocked), it accumulates radiance using BSDF and the sampled light's contribution. In this case, the sample is already weighted based on the light distribution, but I still normalize L_out by dividing by the number of samples. Ultimately, I compute the reflected radiance (L_out) as:
 
 		\[L\_out += (L\_in • BSDF • cosine) / PDF\]
 
@@ -230,7 +231,7 @@
 
 
 		<h2>Part 4: Global Illumination</h2>
-		<b>(A)</b> First, I will explain how I implemented the indirect lighting function. The first step of the implementation is to use sample_f to sample an incoming direction w\_in from the BSDF. Then, setting my Russian Roulette termination probability to 0.7, I use the coin\_flip() function to determine whether we should continue to recurse more light bounces (this method ensures that rays don't infinitely recurse). Also, if the ray depth equal the max_ray_depth, we force recursion to ensure at least one indirect bounce. Next, I convert w\_in from object to world coordinates using the object-2-world transformation matrix, create a new ray originating at hit\_p • w\_in through w\_in, and then reduce the ray depth by 1 as we recurse. Next, I check if the new ray hits another object. If so, I recursively compute indirect illumination in order to finally calculate and return L\_out as follows:
+		<b>(A)</b> First, I will explain how I implemented the indirect lighting function. The first step of the implementation is to use sample_f to sample an incoming direction w_in from the BSDF. Then, setting my Russian Roulette termination probability to 0.7, I use the coin_flip() function to determine whether we should continue to recurse more light bounces (this method ensures that rays don't infinitely recurse). Also, if the ray depth equal the max_ray_depth, we force recursion to ensure at least one indirect bounce. Next, I convert w_in from object to world coordinates using the object-2-world transformation matrix, create a new ray originating at hit_p • w_in through w_in, and then reduce the ray depth by 1 as we recurse. Next, I check if the new ray hits another object. If so, I recursively compute indirect illumination in order to finally calculate and return L_out as follows:
 
 		\[L\_out = (indirect • BSDF • cosine) / (PDF • RR\_prob)\]
 
@@ -320,8 +321,6 @@
 
 
 		<h2>Part 5: Adaptive Sampling</h2>
-		Explain adaptive sampling. Walk through your implementation of the adaptive sampling.
-
 		<b>(A)</b> Adaptive sampling is an optimization technique used to reduce the number of samples required to converge to a noise-free solution in Monte Carlo path tracing. Ultimately, we want to focus more samples on areas of the image that have high variance ore require more samples to reduce noise (while using fewer samples in areas where the pixel values have already converged).
 
 		Here is how my adaptive sampling implementation works. First, we accumulate the illuminance and radiance across our intial sampling. After a certain number of samples, we then calculate the mean and standard deviation of the sample's illuminance. From here, we can compute a confidence interval for the pixel's average radiance. But if the confidence interval is small enough, we can determine that the pixel has converged and to stop sampling for that pixel in the future. In this case, the stop condition is:
