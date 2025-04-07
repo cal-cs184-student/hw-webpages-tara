@@ -69,11 +69,11 @@
 			  <tr>
 				<td style="text-align: center;">
 				  <img src="part1/no-shearing.png" width="400px"/>
-				  <figcaption>No Shearing Constraints</figcaption>
+				  <figcaption>No Shearing Constraint</figcaption>
 				</td>
 				<td style="text-align: center;">
 				  <img src="part1/only-shearing.png" width="400px"/>
-				  <figcaption>Only Shearing Constraints</figcaption>
+				  <figcaption>Only Shearing Constraint</figcaption>
 				</td>
 			  </tr>
 			</table>
@@ -178,7 +178,61 @@
 		</div>
 
 		<h2>Part 4: Handling self-collisions</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		TODO: Describe your implementation of handling self-collisions.
+
+		<p>Here are three images documenting how the cloth falls and folds on itself, starting with an early, initial self-collision and ending with the cloth at a more restful state:</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part4/selfcollision-pt1.png" width="400px"/>
+				  <figcaption>Early, Initial Collision</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part4/selfcollision-pt2.png" width="400px"/>
+				  <figcaption>More, Subsequential Collisions</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part4/selfcollision-pt3.png" width="400px"/>
+				  <figcaption>Cloth in Restful State</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		<p>As exampled before, density and spring constant ks are inversely similar (higher density looks like lower ks and lower density looks like higher ks). This phenonemon is also true here. We can see below that compared to the default images, lower density and higher ks caused the folds of the cloth to be bigger and stiffer, whereas higher density and lower ks would cause the folds to be less stable and actually causing the cloth to phase through the plane if too extreme.</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part4/midsim-1density.png" width="400px"/>
+				  <figcaption>Low Density (1 g/cm^2)</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part4/midsim-15density.png" width="400px"/>
+				  <figcaption>Default Density (15 g/cm^2)</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part4/midsim-40density.png" width="400px"/>
+				  <figcaption>High Density (40 g/cm^2)</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part4/midsim-ks2k.png" width="400px"/>
+				  <figcaption>Low ks (2k N/m)</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part4/midsim-ks5k.png" width="400px"/>
+				  <figcaption>Default ks (5k N/m)</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part4/midsim-ks50k.png" width="400px"/>
+				  <figcaption>High ks (50k N/m)</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
 
 		<h2>Part 5: Shaders</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
