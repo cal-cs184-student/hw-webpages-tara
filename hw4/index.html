@@ -80,7 +80,73 @@
 		</div>
 
 		<h2>Part 2: Simulation via numerical integration</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		During the cloth drapping simulation, there are three important parameters to consider: spring constant \(ks\), point density, and spring damping. 
+
+		<p>The spring constant controls the stiffness or stretchiness of the springs in the wiremesh. A higher constant increases spring stiffness while a lower constant increases spring stretchiness. Below are screenshots of the cloth mid-simulation. Notice how the ripping in the cloth changes. When there is a lower constant (50 N/m), the springs are stretchier which results in more ripplies in the cloth, whereas when there is a higher constant (100k N/m), the springs are stiffier which results in much less rippling.</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part2/midsim-ks50.png" width="400px"/>
+				  <figcaption>Low ks (50 N/m)</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part2/midsim-ks5k.png" width="400px"/>
+				  <figcaption>Default ks (5k N/m)</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part2/midsim-ks100k.png" width="400px"/>
+				  <figcaption>High ks (100k N/m)</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		<p>The mesh density parameter controls the ``heaviness" of the point masses in the wiremesh. Something I find super interesting is that the density seems to be inversely similar to the spring constant. Just like with a lower spring constant, a higher density also increases ripplies and cloth movement. But on the other hand, just like with a higher spring constant, a lower density also decreases ripplies and cloth movement. Because these density changes are so inversely similar to the spring constant changes, I've decided to demonstrate the difference in density from a different angle. As you can also see, higher density causes the cloth to sag more than lower density. Below are images of the cloth in its final resting state:</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part2/finalsim-1density.png" width="400px"/>
+				  <figcaption>Low density (1 g/cm^2)</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part2/finalsim-15density.png" width="400px"/>
+				  <figcaption>Default density (15 g/cm^2)</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part2/finalsim-999density.png" width="400px"/>
+				  <figcaption>High density (999 g/cm^2)</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		<p>And finally, the spring damping parameter controls how long the springs in the wiremesh will continue to oscillate and ripple until eventually coming to rest (assuming damping > 0\%). The images below are taken after the center of the cloth drops for the first time (which will allow us to observing the rippling immediately afterwards). Notice how damping removes the rippling of the cloth after it drops initially. The 40/% damping doesn't have any rippling in the cloth. Observe below:</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part2/midsim-0damp.png" width="400px"/>
+				  <figcaption>Low damping (0/%)</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part2/midsim-ks20damp.png" width="400px"/>
+				  <figcaption>Default damping (20/%)</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part2/midsim-ks40damp.png" width="400px"/>
+				  <figcaption>High damping (40/%)</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div> 
+
+		<p>And lastly, here is a final image of the cloth under all default settings in its final resting state:</p>
+		<figure>
+			<img src="final-rest-norm.png" style="width:100%"/>
+			<figcaption>Default Final Resting State</figcaption>
+		</figure>
 
 		<h2>Part 3: Handling collisions with other objects</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
