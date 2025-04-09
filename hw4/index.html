@@ -40,7 +40,7 @@
 
 		<figure>
 			<img src="clothsim.png" alt="Cloth draped over sphere" style="width:70%"/>
-			<figcaption>Cloth Simulation</figcaption>
+			<figcaption>Cloth Collision Simulation</figcaption>
 		</figure>
 
 		<!--
@@ -48,7 +48,7 @@
 		-->
 
 		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+		Overall, this was my favorite homework becaused it answered many of the questions I've always had about collision and lighting simulations. I got to learn about the mass and spring functions important for cloth draping simulations, and how vary constraints like spring constant/density/damping can impact the realism of the simulation. I also got to learn the algorithms behind how to simulation collisions between planes and 3D objects. But not just collisions between objects, but also self-collisions that are important for folding and realism of the simulation. And lastly, I got to build on all of my knowledge from the previous homeworks to build various shaders for my cloth collision simulation, including my own custom shader!
 
 		<h2>Part 1: Masses and springs</h2>
 		There are three types of spring constraints: (1) sturctural constraints that exist between a point mass and the point mass to its left as well as the point mass above it, (2) shearing constraints that exist between a point mass and the point mass to its diagonal upper left as well as the point mass to its diagonal upper right, and (3) bending constraints that exist between a point mass and the point mass two away to its left as well as the point mass two above it.
@@ -102,7 +102,7 @@
 			</table>
 		</div>
 
-		<p>The mesh density parameter controls the ``heaviness" of the point masses in the wiremesh. Something I find super interesting is that the density seems to be inversely similar to the spring constant. Just like with a lower spring constant, a higher density also increases ripplies and cloth movement. But on the other hand, just like with a higher spring constant, a lower density also decreases ripplies and cloth movement. Because these density changes are so inversely similar to the spring constant changes, I've decided to demonstrate the difference in density from a different angle. As you can also see, higher density causes the cloth to sag more than lower density. Below are images of the cloth in its final resting state:</p>
+		<p>The mesh density parameter controls the "heaviness" of the point masses in the wiremesh. Something I find super interesting is that the density seems to be inversely similar to the spring constant. Just like with a lower spring constant, a higher density also increases ripplies and cloth movement. But on the other hand, just like with a higher spring constant, a lower density also decreases ripplies and cloth movement. Because these density changes are so inversely similar to the spring constant changes, I've decided to demonstrate the difference in density from a different angle. As you can also see, higher density causes the cloth to sag more than lower density. Below are images of the cloth in its final resting state:</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
@@ -149,9 +149,9 @@
 		</figure>
 
 		<h2>Part 3: Handling collisions with other objects</h2>
-		TODO: Describe your implementation of handling collisions with spheres and planes.
+		To handle collisions where planes and spheres, we ultimately need to deterine whether or not any point mass is inside the other primitive. If this overlap occurs, we need to adjust the point mass' position to stay outside the other primitive so that they don't collide. For collision with a plane for example, we calculate the distance to the plane at the current and previous positions, calculate the collision point on the plane using the direction vector, and then resolve the collision using the correction vector and SURFACE\_OFFSET to prevent the two objects from colliding. For  collisions with a sphere, we are doing very similar things but we are check for a collision by comparing the distance from the sphere to the sphere's radius.
 
-		<p>Here are images of the cloth after colliding with a sphere under different spring constants and the cloth colliding with a plane:</p>
+		<p>Below are images of the cloth after colliding with a sphere under different spring constants and the cloth colliding with a plane. As the spring constant increases, the cloth becomes more and more stiff as it rests on the sphere making it harder for it to actually wrap over it.</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
@@ -178,9 +178,9 @@
 		</div>
 
 		<h2>Part 4: Handling self-collisions</h2>
-		TODO: Describe your implementation of handling self-collisions.
+		I first thought that handling self-collisions would work very similarly to handingly collisions between two objects, but the implementations are actually somewhat different. First we need a hash\_position function that takes the position of a point mass and maps it to a unique identifier that corresponds to a 3D box in space in order to compute spatial hashing (groups nearby masses to make checking for potential collisions easier). Then we use the hash\_position function in our build\_spatial\_map function that loops through all the point masses in the cloth and maps each point to a specific 3D box in space. Now we can quickly find self-collision candidates without needing to check all pairs of point masses. And lastly, we use self\_collide to actually detect and resolve self-collisions. If two points are 2 * thickness distance apart, we can compute the correction vector to force the two point masses to be 2 * thickness apart and then averaged overa ll the point masses the vector interacts with. We use simulation\_steps to scale down the vector to avoid sudden, unnatural corrections.
 
-		<p>Here are three images documenting how the cloth falls and folds on itself, starting with an early, initial self-collision and ending with the cloth at a more restful state:</p>
+		<p>Here are three images documenting how the cloth falls and folds on itself, starting with an early, initial self-collision, and ending with the cloth at a more restful state:</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
@@ -235,13 +235,9 @@
 		</div>
 
 		<h2>Part 5: Shaders</h2>
-		Explain in your own words what is a shader program and how vertex and fragment shaders work together to create lighting and material effects.
+		A shader program is a set of small programs (written in the GLSL shading language) that are used to calculate the visual appearance of a 3D model based on its lighting, material, and texture. More specifically, vertex shaders are responsible for processing the vertex data (positions and normals) and transforming it into a different coordinate system (e.g. model to camera space). On the other hand, the fragement shader is responsible for determining the color of each pixel that will be rendered on the screen, based on inputs from the vertex shader and any textures that need to be applied. Ultimately the two are able to work together seamlessly by letting the vertex shaders process the geometry and shading, and then passing that information to the fragment shader that calculates the final pixel colors.
 
-		<p>Explain the Blinn-Phong shading model in your own words. Show a screenshot of your Blinn-Phong shader outputting only the ambient component, a screen shot only outputting the diffuse component, a screen shot only outputting the specular component, and one using the entire Blinn-Phong model.</p>
-
-		<p>Explain the Blinn-Phong shading model in your own words.</p>
-
-		<p>Below are images of my Blinn-Phong shader with only the ambient component, only the diffuse component, only the specular component, and all three combined:</p>
+		<p>Below are images of my Blinn-Phong shader with only the ambient component, only the diffuse component, only the specular component, and all three combined. The Blinn-Phong shading model incorporates ambient lighting, diffuse lighting, and specular lighting in order to give objects a glossy appearance. The ambient term simulates the constant light that is scattered around the scene. The diffuse term represents the light that directly hits a surface and accounts for how light reflects off rough surfaces. And finally the specular lighting term simulates the shiny, reflective highlights on a surface depending on the view direction.</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
@@ -273,7 +269,7 @@
 			<figcaption>My Dog Texture</figcaption>
 		</figure>
 
-		<p>Below are images of my bump mapping on the cloth and on the sphere and my displacement mapping on the sphere. I used the texture_4 that was provided.</p>
+		<p>Below are images of my bump mapping on the cloth and on the sphere and my displacement mapping on the sphere. I used the texture_4 that was provided. These two approaches looks somewhat similar, but have fundamentally very different strategies. Bump mapping alters the normals using light calculations which gives the appearance of a painting a 3D texture on a 2D surface if that makes sense. On the other hand, displacement mapping actually alters the vertex positions and physically deforms the 3D objects which makes the bumps actually looks 3D. You can best see the difference on the edges of the cloth (bump mapping is still perfectly flat with straight edges where the displacement mapping creates noticebly bumpy cloth edges).</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
@@ -287,11 +283,9 @@
 				</td>
 			  </tr>
 			</table>
-		</div>
+		</div> 
 
-		<p>Compare the two approaches and resulting renders in your own words.</p> 
-
-		<p>Below are side by side comparisons of how the two shaders react to the sphere by changing teh sphere mesh's coarseness:</p>
+		<p>Below are side by side comparisons of how the two shaders react to the sphere by changing teh sphere mesh's coarseness. I'm not sure if my pictures show this super well, but I noticed that moving the simulation in the GUI that the higher resolution resulted in the bump mapping and displacement being more pronounced. The higher resolution almost makes the mapping look bumpier which is super interesting.</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
@@ -317,8 +311,6 @@
 			</table>
 		</div>
 
-		<p>Compare how your the two shaders react to the sphere by changing the sphere mesh’s coarseness by using -o 16 -a 16 and then -o 128 -a 128.</p>
-
 		<p>Below is an image of my mirror shader on the cloth and on the sphere:</p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
@@ -335,7 +327,22 @@
 			</table>
 		</div>
 
-		<p>Explain what you did in your custom shader, if you made one.</p>
+		<p>Below is my custom shader. It incorporates bump mapping, environment-mapped reflections (mirroring), texture mapping, and Blinn-Phong lighting! It looks very busy and messy which shows that adding every shading technique generally isn't neccessary and certainly doesn't help with realism, but I wanted to do something a little crazy. The texture is my dog, the bumps are from the texture 4 that was provided. You can see the mirroring of the bridge in the environment the blends with my dog, and then the lighting (more subtly) you can see is using Blinn-Phong shading!</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part5/custom1.png" width="400px"/>
+				  <!-- <figcaption>Bump Mapping on Cloth and Sphere</figcaption> -->
+				</td>
+				<td style="text-align: center;">
+				  <img src="part5/custom2.png" width="400px"/>
+				  <!-- <figcaption>Displacement Mapping on Cloth and Sphere</figcaption> -->
+				</td>
+			  </tr>
+			</table>
+		</div>
+
 
 		<!-- <h2>(Optional) Part 6: Extra Credit - Additional cloth simulation features!</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. -->
