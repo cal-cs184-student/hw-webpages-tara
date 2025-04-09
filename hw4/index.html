@@ -235,7 +235,107 @@
 		</div>
 
 		<h2>Part 5: Shaders</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		Explain in your own words what is a shader program and how vertex and fragment shaders work together to create lighting and material effects.
+
+		<p>Explain the Blinn-Phong shading model in your own words. Show a screenshot of your Blinn-Phong shader outputting only the ambient component, a screen shot only outputting the diffuse component, a screen shot only outputting the specular component, and one using the entire Blinn-Phong model.</p>
+
+		<p>Explain the Blinn-Phong shading model in your own words.</p>
+
+		<p>Below are images of my Blinn-Phong shader with only the ambient component, only the diffuse component, only the specular component, and all three combined:</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part5/phong-La.png" width="400px"/>
+				  <figcaption>Only Ambient Component</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part5/phong-Ld.png" width="400px"/>
+				  <figcaption>Only Diffuse Component</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part5/phong-Ls.png" width="400px"/>
+				  <figcaption>Only Specular Component</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part5/phong-all.png" width="400px"/>
+				  <figcaption>Entire Blinn-Phong Model</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		<p>Below is an image of my texture mapping shader using my own custom texture (my dog)!</p>
+		<figure>
+			<img src="part5/texture.png" style="width:70%"/>
+			<figcaption>My Dog Texture</figcaption>
+		</figure>
+
+		<p>Below are images of my bump mapping on the cloth and on the sphere and my displacement mapping on the sphere. I used the texture_4 that was provided.</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part5/bump.png" width="400px"/>
+				  <figcaption>Bump Mapping on Cloth and Sphere</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part5/displacement.png" width="400px"/>
+				  <figcaption>Displacement Mapping on Cloth and Sphere</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		<p>Compare the two approaches and resulting renders in your own words.</p> 
+
+		<p>Below are side by side comparisons of how the two shaders react to the sphere by changing teh sphere mesh's coarseness:</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part5/bump-o16a16.png" width="400px"/>
+				  <figcaption>Bump Mapping w/ res 16x16</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part5/displacement-o16a16.png" width="400px"/>
+				  <figcaption>Displacement Mapping  w/ res 16x16</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part5/bump-o128a128.png" width="400px"/>
+				  <figcaption>Bump Mapping w/ res 128x128</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="part5/displacement-o128a128.png" width="400px"/>
+				  <figcaption>Displacement Mapping w/ res 128x128</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		<p>Compare how your the two shaders react to the sphere by changing the sphere mesh’s coarseness by using -o 16 -a 16 and then -o 128 -a 128.</p>
+
+		<p>Below is an image of my mirror shader on the cloth and on the sphere:</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="part5/mirror1.png" width="400px"/>
+				  <!-- <figcaption>Bump Mapping on Cloth and Sphere</figcaption> -->
+				</td>
+				<td style="text-align: center;">
+				  <img src="part5/mirror2.png" width="400px"/>
+				  <!-- <figcaption>Displacement Mapping on Cloth and Sphere</figcaption> -->
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		<p>Explain what you did in your custom shader, if you made one.</p>
 
 		<!-- <h2>(Optional) Part 6: Extra Credit - Additional cloth simulation features!</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. -->
